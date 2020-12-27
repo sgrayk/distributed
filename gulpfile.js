@@ -14,6 +14,8 @@ var gulp = require("gulp"),
   watch = require("gulp-watch"),
   autoprefixer = require("gulp-autoprefixer");
 
+
+
 gulp.task("express", function() {
   var app = express();
   app.use(connectlivereload({ port: 35729 }));
@@ -96,7 +98,7 @@ gulp.task("clean-dist", function() {
   return gulp.src("dist/*", { read: false }).pipe(clean());
 });
 
-gulp.task("bundle", function() {
+gulp.task("bundle", async function() {
   bundleVendorCSS();
   bundleVendorJS();
   processSass();
@@ -142,7 +144,7 @@ gulp.task("test-once", function(done) {
   );
 });
 
-gulp.task("copy", function() {
+gulp.task("copy", async function() {
   gulp
     .src("node_modules/roboto-fontface/fonts/*{Regular,Bold}.*")
     .pipe(gulp.dest("dist/fonts"));
@@ -153,12 +155,13 @@ gulp.task("copy", function() {
   gulp.src("favicon.ico").pipe(gulp.dest("dist"));
   gulp.src("firebase.json").pipe(gulp.dest("dist"));
   gulp.src("README.md").pipe(gulp.dest("dist"));
-  gulp.src("CNAME").pipe(gulp.dest("dist"));
+  gulp.src("CNAME", { allowEmpty: true }).pipe(gulp.dest("dist"));
 
   buildHTML();
 });
 
-gulp.task("default", ["bundle", "copy", "express", "livereload", "watch"]);
-gulp.task("test", ["lint", "watch-test"]);
-gulp.task("testci", ["lint", "test-once"]);
-gulp.task("build", ["clean-dist", "bundle", "copy"]);
+gulp.task("default", gulp.series("bundle", "copy", "express", "livereload", "watch"));
+gulp.task("test", gulp.series("lint", "watch-test"));
+gulp.task("testci", gulp.series("lint", "test-once"));
+gulp.task("build", gulp.series("clean-dist", "bundle", "copy"));
+
