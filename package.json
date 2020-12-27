@@ -43,6 +43,7 @@
     "tiny-lr": "latest"
   },
   "dependencies": {
+    "@angular/cli": "^11.0.5",
     "angular": "^1.8.2",
     "angular-aria": "^1.5.5",
     "angular-sanitize": "^1.5.5",
